@@ -10,6 +10,7 @@ const PLANET_SIZE = 50;
 const DivDistanceVisualization = () => {
     const visRef = createRef();
     const [scale, setScale] = useState(1);
+    const [isDragging, setIsDragging] = useState(false);
     const [translate, setTranslate] = useState(0);
     const [visWidth, setVisWidth] = useState(0);
 
@@ -17,11 +18,13 @@ const DivDistanceVisualization = () => {
         console.log("componentDidMount");
 
         const scrollFunc = (e) => updateScale(e.deltaY);
-        const listener = window.addEventListener("wheel", scrollFunc);
+        window.addEventListener("wheel", scrollFunc);
 
         setVisWidth(visRef.current.clientWidth);
 
-        return () => window.removeEventListener("wheel", scrollFunc);
+        return () => {
+            window.removeEventListener("wheel", scrollFunc);
+        };
     }, []);
 
     const updateScale = (deltaY) => {
@@ -61,21 +64,10 @@ const DivDistanceVisualization = () => {
         );
     };
 
-    const onVisMouseMoveWhileDown = (e) => {
-        console.log(e);
-    };
-
-    const onVisMouseDown = (e) => {
-        console.log("onMouseDown");
-        visRef.current.addEventListener("mousemove", onVisMouseMoveWhileDown);
-    };
-
-    const onVisMouseUp = (e) => {
-        console.log("onMouseUp");
-        visRef.current.removeEventListener(
-            "mousemove",
-            onVisMouseMoveWhileDown
-        );
+    const whileDragging = (e) => {
+        if (isDragging) {
+            console.log(e);
+        }
     };
 
     return (
@@ -83,8 +75,9 @@ const DivDistanceVisualization = () => {
             <div
                 className="visualization"
                 ref={visRef}
-                onMouseDown={onVisMouseDown}
-                onMouseUp={onVisMouseUp}
+                onMouseDown={() => setIsDragging(true)}
+                onMouseMove={whileDragging}
+                onMouseUp={() => setIsDragging(false)}
             >
                 <div className="middle-line" />
                 <div className="normal-line" style={{ left: visWidth / 2 }} />
