@@ -2,7 +2,7 @@ import React, { createRef, useEffect, useState } from "react";
 
 import "./DivDistanceVisualization.css";
 
-const ZOOM_PERCENT = 0.05;
+const ZOOM_PERCENT = 0.1;
 
 const PLANET_POS = 400;
 const PLANET_SIZE = 50;
@@ -41,19 +41,17 @@ const DivDistanceVisualization = () => {
         });
     };
 
-    const renderPlanet = () => {
-        let distanceFromCenter = visWidth / 2 - PLANET_POS;
+    const renderPlanet = (pos, size) => {
+        let distanceFromCenter = visWidth / 2 - pos;
         let newDistanceFromCenter = distanceFromCenter * scale;
-        console.log(newDistanceFromCenter);
-        let pos = visWidth / 2 - newDistanceFromCenter;
-        console.log(pos);
+        let distanceFromLeft = visWidth / 2 - newDistanceFromCenter;
+
         return (
             <>
                 <div
                     className="temp-line"
-                    style={{ border: "1px dashed red", left: pos }}
+                    style={{ border: "1px dashed red", left: distanceFromLeft }}
                 />
-                <div className="temp-line" style={{ left: visWidth / 2 }} />
             </>
         );
     };
@@ -62,7 +60,14 @@ const DivDistanceVisualization = () => {
         <div className="div-distance-visualization">
             <div className="visualization" ref={visRef}>
                 <div className="middle-line" />
-                {visWidth ? renderPlanet() : null}
+                <div className="temp-line" style={{ left: visWidth / 2 }} />
+
+                {visWidth
+                    ? [
+                          renderPlanet(visWidth / 2 - 100),
+                          renderPlanet(visWidth / 2 + 100),
+                      ]
+                    : null}
             </div>
         </div>
     );
