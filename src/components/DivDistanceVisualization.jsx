@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 
 import "./DivDistanceVisualization.css";
 
-const ZOOM_PERCENT = 0.1;
-const VISUALIZATION_WIDTH = window.innerWidth;
-const VISUALIZATION_HEIGHT = window.innerHeight * 0.4;
+const ZOOM_PERCENT = 0.05;
+
+const PLANET_POS = 400;
+const PLANET_SIZE = 50;
 
 const DivDistanceVisualization = () => {
+    const visRef = createRef();
     const [scale, setScale] = useState(1);
+    const [visWidth, setVisWidth] = useState();
 
     useEffect(() => {
-        window.addEventListener("wheel", (e) => updateScale(e.deltaY));
+        console.log("componentDidMount");
+        const listener = window.addEventListener("wheel", (e) =>
+            updateScale(e.deltaY)
+        );
 
-        return () => window.removeEventListener("wheel");
+        setVisWidth(visRef.current.clientWidth);
+
+        return () => window.removeEventListener("wheel", listener);
     }, []);
 
     const updateScale = (deltaY) => {
@@ -33,13 +41,28 @@ const DivDistanceVisualization = () => {
         });
     };
 
+    const renderPlanet = () => {
+        let distanceFromCenter = visWidth / 2 - PLANET_POS;
+        let newDistanceFromCenter = distanceFromCenter * scale;
+        console.log(newDistanceFromCenter);
+        let pos = visWidth / 2 - newDistanceFromCenter;
+        console.log(pos);
+        return (
+            <>
+                <div
+                    className="temp-line"
+                    style={{ border: "1px dashed red", left: pos }}
+                />
+                <div className="temp-line" style={{ left: visWidth / 2 }} />
+            </>
+        );
+    };
+
     return (
         <div className="div-distance-visualization">
-            <div className="visualization">
+            <div className="visualization" ref={visRef}>
                 <div className="middle-line" />
-                <div className="planet-wrapper" style={{ left: 200 }}>
-                    <div className="planet" style={{ width: 50, height: 50 }} />
-                </div>
+                {visWidth ? renderPlanet() : null}
             </div>
         </div>
     );

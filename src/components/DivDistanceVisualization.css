@@ -23,6 +23,12 @@
     width: 100%;
 }
 
+.div-distance-visualization .visualization .temp-line {
+    height: 100%;
+    position: absolute;
+    border: 1px solid black;
+}
+
 .div-distance-visualization .visualization .planet-wrapper {
     height: 100%;
     position: absolute;
