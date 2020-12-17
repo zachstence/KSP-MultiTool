@@ -64,10 +64,15 @@ const DivDistanceVisualization = () => {
         );
     };
 
+    let lastDragEvent;
     const whileDragging = (e) => {
         if (isDragging) {
-            setTranslate((t) => t + 1);
-            console.log(e);
+            if (lastDragEvent) {
+                const delta = e.clientX - lastDragEvent.clientX;
+                console.log(delta);
+                setTranslate((t) => t + delta);
+            }
+            lastDragEvent = e;
         }
     };
 
