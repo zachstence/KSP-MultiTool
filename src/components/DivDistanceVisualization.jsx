@@ -41,18 +41,22 @@ const DivDistanceVisualization = () => {
         });
     };
 
-    const renderPlanet = (pos, size) => {
-        let distanceFromCenter = visWidth / 2 - pos;
+    const renderPlanet = (centerPos, size) => {
+        let leftPos = centerPos - size / 2;
+
+        let distanceFromCenter = visWidth / 2 - leftPos;
         let newDistanceFromCenter = distanceFromCenter * scale;
         let distanceFromLeft = visWidth / 2 - newDistanceFromCenter;
 
+        let newSize = size * scale;
+
         return (
-            <>
+            <div className="planet-wrapper" style={{ left: distanceFromLeft }}>
                 <div
-                    className="temp-line"
-                    style={{ border: "1px dashed red", left: distanceFromLeft }}
+                    className="planet"
+                    style={{ width: newSize, height: newSize }}
                 />
-            </>
+            </div>
         );
     };
 
@@ -63,10 +67,7 @@ const DivDistanceVisualization = () => {
                 <div className="temp-line" style={{ left: visWidth / 2 }} />
 
                 {visWidth
-                    ? [
-                          renderPlanet(visWidth / 2 - 100),
-                          renderPlanet(visWidth / 2 + 100),
-                      ]
+                    ? [renderPlanet(0, 200), renderPlanet(visWidth / 2, 10)]
                     : null}
             </div>
         </div>
