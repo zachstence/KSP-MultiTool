@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 
 import "./DistanceVisualization.css";
 
-const ZOOM_PERCENT = 0.2;
+const ZOOM_PERCENT = 0.1;
 
 const DistanceVisualization = () => {
-    const [scale, setScale] = useState(1);
+    const [scale, setScale] = useState(100);
 
     useEffect(() => {
         window.addEventListener("wheel", (e) => updateScale(e.deltaY));
@@ -16,9 +16,9 @@ const DistanceVisualization = () => {
         setScale((scale) => {
             let newScale;
 
-            if (deltaY > 0) {
+            if (deltaY < 0) {
                 newScale = scale * (1 + ZOOM_PERCENT);
-            } else if (deltaY < 0) {
+            } else if (deltaY > 0) {
                 newScale = scale / (1 + ZOOM_PERCENT);
             } else {
                 newScale = scale;
@@ -36,7 +36,6 @@ const DistanceVisualization = () => {
                 className="visualization"
                 style={{ width: scale, height: "30vh" }}
             >
-                {" "}
                 {scale}
             </div>
         </div>
