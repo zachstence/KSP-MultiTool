@@ -1,28 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
+const ZOOM_PERCENT = 0.1;
 
 const DistanceVisualization = () => {
-    const canvasRef = React.createRef();
+    const [scale, setScale] = useState(1);
 
     useEffect(() => {
-        initCanvas();
-    });
+        window.addEventListener("wheel", (e) => updateScale(e.deltaY));
 
-    const initCanvas = () => {
-        const canvas = canvasRef.current;
+        return () => window.removeEventListener("wheel");
+    }, []);
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight / 2;
+    const updateScale = (deltaY) => {
+        const inc = deltaY * ZOOM_PERCENT;
+        setScale((scale) => {
+            let newScale;
+
+            if (deltaY > 0) {
+                newScale = scale * (1 + ZOOM_PERCENT);
+            } else if (deltaY < 0) {
+                newScale = scale / (1 + ZOOM_PERCENT);
+            } else {
+                newScale = scale;
+            }
+
+            if (newScale <= 1) newScale = 1;
+
+            return newScale;
+        });
     };
 
-    const updateCanvas = () => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-
-        ctx.font = "30px Arial";
-        ctx.fillText("This is a canvas", 100, 100);
-    };
-
-    return <canvas onClick={updateCanvas} ref={canvasRef}></canvas>;
+    return <div style={{ width: scale, height: scale }}>{scale}</div>;
 };
 
 export default DistanceVisualization;
