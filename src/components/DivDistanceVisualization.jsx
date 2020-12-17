@@ -10,17 +10,18 @@ const PLANET_SIZE = 50;
 const DivDistanceVisualization = () => {
     const visRef = createRef();
     const [scale, setScale] = useState(1);
-    const [visWidth, setVisWidth] = useState();
+    const [translate, setTranslate] = useState(0);
+    const [visWidth, setVisWidth] = useState(0);
 
     useEffect(() => {
         console.log("componentDidMount");
-        const listener = window.addEventListener("wheel", (e) =>
-            updateScale(e.deltaY)
-        );
+
+        const scrollFunc = (e) => updateScale(e.deltaY);
+        const listener = window.addEventListener("wheel", scrollFunc);
 
         setVisWidth(visRef.current.clientWidth);
 
-        return () => window.removeEventListener("wheel", listener);
+        return () => window.removeEventListener("wheel", scrollFunc);
     }, []);
 
     const updateScale = (deltaY) => {
@@ -60,11 +61,33 @@ const DivDistanceVisualization = () => {
         );
     };
 
+    const onVisMouseMoveWhileDown = (e) => {
+        console.log(e);
+    };
+
+    const onVisMouseDown = (e) => {
+        console.log("onMouseDown");
+        visRef.current.addEventListener("mousemove", onVisMouseMoveWhileDown);
+    };
+
+    const onVisMouseUp = (e) => {
+        console.log("onMouseUp");
+        visRef.current.removeEventListener(
+            "mousemove",
+            onVisMouseMoveWhileDown
+        );
+    };
+
     return (
         <div className="div-distance-visualization">
-            <div className="visualization" ref={visRef}>
+            <div
+                className="visualization"
+                ref={visRef}
+                onMouseDown={onVisMouseDown}
+                onMouseUp={onVisMouseUp}
+            >
                 <div className="middle-line" />
-                <div className="temp-line" style={{ left: visWidth / 2 }} />
+                <div className="normal-line" style={{ left: visWidth / 2 }} />
 
                 {visWidth
                     ? [renderPlanet(0, 200), renderPlanet(visWidth / 2, 10)]

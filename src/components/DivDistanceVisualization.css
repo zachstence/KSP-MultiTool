@@ -11,7 +11,8 @@
 .div-distance-visualization .visualization {
     height: 40%;
     width: 100%;
-    background-color: darkgray;
+    background-color: lightgray;
+    border: 1px solid black;
 
     position: relative;
 }
@@ -23,10 +24,10 @@
     width: 100%;
 }
 
-.div-distance-visualization .visualization .temp-line {
+.div-distance-visualization .visualization .normal-line {
     height: 100%;
     position: absolute;
-    border: 1px solid black;
+    border: 1px dashed darkgray;
 }
 
 .div-distance-visualization .visualization .planet-wrapper {
