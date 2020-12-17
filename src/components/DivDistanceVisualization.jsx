@@ -66,6 +66,7 @@ const DivDistanceVisualization = () => {
 
     const whileDragging = (e) => {
         if (isDragging) {
+            setTranslate((t) => t + 1);
             console.log(e);
         }
     };
@@ -73,7 +74,7 @@ const DivDistanceVisualization = () => {
     return (
         <div className="div-distance-visualization">
             <div
-                className="visualization"
+                className={`visualization dragging-${isDragging}`}
                 ref={visRef}
                 onMouseDown={() => setIsDragging(true)}
                 onMouseMove={whileDragging}

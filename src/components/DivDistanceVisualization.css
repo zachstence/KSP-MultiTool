@@ -15,6 +15,14 @@
     border: 1px solid black;
 
     position: relative;
+
+    cursor: move; /* fallback if grab not supported */
+    cursor: grab;
+}
+
+.div-distance-visualization .visualization.dragging-true {
+    cursor: move; /* fallback if grabbing not supported */
+    cursor: grabbing;
 }
 
 .div-distance-visualization .visualization .middle-line {
