@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import "./DistanceVisualization.css";
 
 const ZOOM_PERCENT = 0.1;
 
 const DistanceVisualization = () => {
-    const [scale, setScale] = useState(100);
+    const canvasRef = useRef();
+    const [scale, setScale] = useState(1);
 
     useEffect(() => {
         window.addEventListener("wheel", (e) => updateScale(e.deltaY));
+        initCanvas();
+
         return () => window.removeEventListener("wheel");
     }, []);
+
+    useEffect(() => {
+        updateCanvas();
+    }, [scale]);
 
     const updateScale = (deltaY) => {
         setScale((scale) => {
@@ -30,14 +37,27 @@ const DistanceVisualization = () => {
         });
     };
 
+    const initCanvas = () => {
+        const canvas = canvasRef.current;
+        canvas.width = window.innerWidth * scale;
+        canvas.height = window.innerHeight * 0.4;
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.moveTo(0, 0);
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.stroke();
+    };
+
+    const updateCanvas = () => {
+        console.log("updateCanvas");
+        const canvas = canvasRef.current;
+        // canvas.width = window.innerWidth * scale;
+    };
+
     return (
         <div className="distance-visualization">
-            <div
-                className="visualization"
-                style={{ width: scale, height: "30vh" }}
-            >
-                {scale}
-            </div>
+            <canvas className="visualization" ref={canvasRef} />
         </div>
     );
 };
