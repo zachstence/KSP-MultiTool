@@ -46,7 +46,7 @@ const DivDistanceVisualization = () => {
     };
 
     const renderPlanet = (centerPos, size) => {
-        let leftPos = centerPos - size / 2;
+        let leftPos = centerPos + translate - size / 2;
 
         let distanceFromCenter = visWidth / 2 - leftPos;
         let newDistanceFromCenter = distanceFromCenter * scale;
@@ -55,7 +55,10 @@ const DivDistanceVisualization = () => {
         let newSize = size * scale;
 
         return (
-            <div className="planet-wrapper" style={{ left: distanceFromLeft }}>
+            <div
+                className="planet-wrapper"
+                style={{ left: distanceFromLeft + translate }}
+            >
                 <div
                     className="planet"
                     style={{ width: newSize, height: newSize }}
