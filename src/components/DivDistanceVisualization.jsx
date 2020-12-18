@@ -4,19 +4,28 @@ import "./DivDistanceVisualization.css";
 
 const ZOOM_PERCENT = 0.1;
 
-const PLANET_POS = 400;
-const PLANET_SIZE = 50;
+const BODY_POSITIONS = [0, 5, 10, 13, 21, 42, 69, 90];
+
+const BODIES = [
+    { name: "Kerbol", pos: 0 },
+    { name: "Moho", pos: 5 },
+    { name: "Eve", pos: 10 },
+    { name: "Kerbin", pos: 14 },
+    { name: "Duna", pos: 21 },
+    { name: "Dres", pos: 42 },
+    { name: "Jool", pos: 69 },
+    { name: "Eeloo", pos: 90 },
+];
+const MAX_COORD = 115;
 
 const DivDistanceVisualization = () => {
     const visRef = createRef();
     const [scale, setScale] = useState(1);
     const [isDragging, setIsDragging] = useState(false);
     const [translate, setTranslate] = useState(0);
-    const [visWidth, setVisWidth] = useState(0);
+    const [visWidth, setVisWidth] = useState();
 
     useEffect(() => {
-        console.log("componentDidMount");
-
         const scrollFunc = (e) => updateScale(e.deltaY);
         window.addEventListener("wheel", scrollFunc);
 
@@ -45,24 +54,21 @@ const DivDistanceVisualization = () => {
         });
     };
 
-    const renderPlanet = (centerPos, size) => {
-        let leftPos = centerPos + translate - size / 2;
+    /*
+        Coord = coordinate in space
+        Pos = position in the HTML visualization
 
-        let distanceFromCenter = visWidth / 2 - leftPos;
-        let newDistanceFromCenter = distanceFromCenter * scale;
-        let distanceFromLeft = visWidth / 2 - newDistanceFromCenter;
+        ?
+    */
 
-        let newSize = size * scale;
+    const renderPlanet = (coord, size) => {
+        const pos = (coord / MAX_COORD) * visWidth;
+
+        const leftEdgePos = pos - size / 2;
 
         return (
-            <div
-                className="planet-wrapper"
-                style={{ left: distanceFromLeft + translate }}
-            >
-                <div
-                    className="planet"
-                    style={{ width: newSize, height: newSize }}
-                />
+            <div className="planet-wrapper" style={{ left: leftEdgePos }}>
+                <div className="planet" style={{ width: size, height: size }} />
             </div>
         );
     };
@@ -72,7 +78,6 @@ const DivDistanceVisualization = () => {
         if (isDragging) {
             if (lastDragEvent) {
                 const delta = e.clientX - lastDragEvent.clientX;
-                console.log(delta);
                 setTranslate((t) => t + delta);
             }
             lastDragEvent = e;
@@ -92,7 +97,9 @@ const DivDistanceVisualization = () => {
                 <div className="normal-line" style={{ left: visWidth / 2 }} />
 
                 {visWidth
-                    ? [renderPlanet(0, 200), renderPlanet(visWidth / 2, 10)]
+                    ? BODIES.map((body) => {
+                          return renderPlanet(body.pos, 50);
+                      })
                     : null}
             </div>
         </div>
