@@ -6,14 +6,14 @@ const ZOOM_PERCENT = 0.1;
 
 const BODIES = [
     // Distances in km
-    { name: "Kerbol", color: "yellow", coordinate: 0, diameter: 261600 },
-    { name: "Moho", color: "brown", coordinate: 5000000, diameter: 250 },
-    { name: "Eve", color: "purple", coordinate: 10000000, diameter: 700 },
-    { name: "Kerbin", color: "blue", coordinate: 14000000, diameter: 600 },
+    // { name: "Kerbol", color: "yellow", coordinate: 0, diameter: 261600 },
+    // { name: "Moho", color: "brown", coordinate: 5000000, diameter: 250 },
+    // { name: "Eve", color: "purple", coordinate: 10000000, diameter: 700 },
+    // { name: "Kerbin", color: "blue", coordinate: 14000000, diameter: 600 },
     { name: "Duna", color: "red", coordinate: 21000000, diameter: 320 },
-    { name: "Dres", color: "gray", coordinate: 42000000, diameter: 320 },
-    { name: "Jool", color: "green", coordinate: 69000000, diameter: 6000 },
-    { name: "Eeloo", color: "white", coordinate: 90000000, diameter: 210 },
+    // { name: "Dres", color: "gray", coordinate: 42000000, diameter: 320 },
+    // { name: "Jool", color: "green", coordinate: 69000000, diameter: 6000 },
+    // { name: "Eeloo", color: "white", coordinate: 90000000, diameter: 210 },
 ];
 const MAX_COORD = 115000000;
 
@@ -63,21 +63,26 @@ const DivDistanceVisualization = () => {
     };
 
     /*
-        Coord = coordinate in space
-        Pos = position in the HTML visualization
+        Need to redo and keep planet positions/sizes in state I think
+        That way, next position can be based off of previous position, translation, and scale
+        Next size can be based off of previous size and scale
+        Rather than calculating from the beginning each time
 
-        ?
+        Maybe go about it completely differently by keeping track of a "viewport" of sorts
+        When panning, viewport slides left and right on the data
+        When zooming, viewport gets smaller or bigger on the data. But really, viewport stays the same and data grows/shrinks outside the viewport.
+        Might be better with choosing what data to load (only within viewport), and translation sensitivity and rendering stuff in the right spot...
+        Not sure, need to think more
     */
-
     const renderPlanet = (body) => {
         const visSize = Math.max(MIN_BODY_SIZE, body.diameter / ratio);
         console.log(visSize);
 
-        const pos = body.coordinate / ratio + translate;
+        const pos = body.coordinate / ratio + translate / scale;
         // console.log("pos: ", pos);
 
         const distanceFromVisCenter = visWidth / 2 - pos;
-        // console.log("distanceFromVisCenter", distanceFromVisCenter);
+        console.log("distanceFromVisCenter", distanceFromVisCenter);
 
         const scaledDistanceFromVisCenter = distanceFromVisCenter * scale;
         // console.log("scaledDistanceFromVisCenter", scaledDistanceFromVisCenter);
