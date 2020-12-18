@@ -5,16 +5,19 @@ import "./DivDistanceVisualization.css";
 const ZOOM_PERCENT = 0.1;
 
 const BODIES = [
-    { name: "Kerbol", loc: 0 },
-    { name: "Moho", loc: 5 },
-    { name: "Eve", loc: 10 },
-    { name: "Kerbin", loc: 14 },
-    { name: "Duna", loc: 21 },
-    { name: "Dres", loc: 42 },
-    { name: "Jool", loc: 69 },
-    { name: "Eeloo", loc: 90 },
+    // Distances in km
+    { name: "Kerbol", color: "yellow", coordinate: 0, diameter: 261600 },
+    { name: "Moho", color: "brown", coordinate: 5000000, diameter: 250 },
+    { name: "Eve", color: "purple", coordinate: 10000000, diameter: 700 },
+    { name: "Kerbin", color: "blue", coordinate: 14000000, diameter: 600 },
+    { name: "Duna", color: "red", coordinate: 21000000, diameter: 320 },
+    { name: "Dres", color: "gray", coordinate: 42000000, diameter: 320 },
+    { name: "Jool", color: "green", coordinate: 69000000, diameter: 6000 },
+    { name: "Eeloo", color: "white", coordinate: 90000000, diameter: 210 },
 ];
-const MAX_COORD = 115;
+const MAX_COORD = 115000000;
+
+const MIN_BODY_SIZE = 10;
 
 const DivDistanceVisualization = () => {
     const visRef = createRef();
@@ -22,6 +25,7 @@ const DivDistanceVisualization = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [translate, setTranslate] = useState(0);
     const [visWidth, setVisWidth] = useState();
+    const [ratio, setRatio] = useState(1);
 
     useEffect(() => {
         const scrollFunc = (e) => updateScale(e.deltaY);
@@ -33,6 +37,12 @@ const DivDistanceVisualization = () => {
             window.removeEventListener("wheel", scrollFunc);
         };
     }, []);
+
+    useEffect(() => {
+        if (visWidth) {
+            setRatio(MAX_COORD / visWidth);
+        }
+    }, [visWidth]);
 
     const updateScale = (deltaY) => {
         setScale((scale) => {
@@ -59,8 +69,11 @@ const DivDistanceVisualization = () => {
         ?
     */
 
-    const renderPlanet = (coord, size) => {
-        const pos = (coord / MAX_COORD) * visWidth + translate;
+    const renderPlanet = (body) => {
+        const visSize = Math.max(MIN_BODY_SIZE, body.diameter / ratio);
+        console.log(visSize);
+
+        const pos = body.coordinate / ratio + translate;
         // console.log("pos: ", pos);
 
         const distanceFromVisCenter = visWidth / 2 - pos;
@@ -71,11 +84,22 @@ const DivDistanceVisualization = () => {
 
         const scaledPos = visWidth / 2 - scaledDistanceFromVisCenter;
 
-        const leftEdgePos = scaledPos - size / 2;
+        const leftEdgePos = scaledPos - visSize / 2;
 
         return (
-            <div className="planet-wrapper" style={{ left: leftEdgePos }}>
-                <div className="planet" style={{ width: size, height: size }} />
+            <div
+                key={body.name}
+                className="planet-wrapper"
+                style={{ left: leftEdgePos }}
+            >
+                <div
+                    className="planet"
+                    style={{
+                        width: visSize,
+                        height: visSize,
+                        backgroundColor: body.color,
+                    }}
+                />
             </div>
         );
     };
@@ -91,6 +115,7 @@ const DivDistanceVisualization = () => {
         }
     };
 
+    console.log("render");
     return (
         <div className="div-distance-visualization">
             <div
@@ -105,7 +130,7 @@ const DivDistanceVisualization = () => {
 
                 {visWidth
                     ? BODIES.map((body) => {
-                          return renderPlanet(body.loc, 50);
+                          return renderPlanet(body);
                       })
                     : null}
             </div>
