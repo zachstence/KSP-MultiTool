@@ -4,17 +4,15 @@ import "./DivDistanceVisualization.css";
 
 const ZOOM_PERCENT = 0.1;
 
-const BODY_POSITIONS = [0, 5, 10, 13, 21, 42, 69, 90];
-
 const BODIES = [
-    { name: "Kerbol", pos: 0 },
-    { name: "Moho", pos: 5 },
-    { name: "Eve", pos: 10 },
-    { name: "Kerbin", pos: 14 },
-    { name: "Duna", pos: 21 },
-    { name: "Dres", pos: 42 },
-    { name: "Jool", pos: 69 },
-    { name: "Eeloo", pos: 90 },
+    { name: "Kerbol", loc: 0 },
+    { name: "Moho", loc: 5 },
+    { name: "Eve", loc: 10 },
+    { name: "Kerbin", loc: 14 },
+    { name: "Duna", loc: 21 },
+    { name: "Dres", loc: 42 },
+    { name: "Jool", loc: 69 },
+    { name: "Eeloo", loc: 90 },
 ];
 const MAX_COORD = 115;
 
@@ -62,9 +60,18 @@ const DivDistanceVisualization = () => {
     */
 
     const renderPlanet = (coord, size) => {
-        const pos = (coord / MAX_COORD) * visWidth;
+        const pos = (coord / MAX_COORD) * visWidth + translate;
+        // console.log("pos: ", pos);
 
-        const leftEdgePos = pos - size / 2;
+        const distanceFromVisCenter = visWidth / 2 - pos;
+        // console.log("distanceFromVisCenter", distanceFromVisCenter);
+
+        const scaledDistanceFromVisCenter = distanceFromVisCenter * scale;
+        // console.log("scaledDistanceFromVisCenter", scaledDistanceFromVisCenter);
+
+        const scaledPos = visWidth / 2 - scaledDistanceFromVisCenter;
+
+        const leftEdgePos = scaledPos - size / 2;
 
         return (
             <div className="planet-wrapper" style={{ left: leftEdgePos }}>
@@ -98,7 +105,7 @@ const DivDistanceVisualization = () => {
 
                 {visWidth
                     ? BODIES.map((body) => {
-                          return renderPlanet(body.pos, 50);
+                          return renderPlanet(body.loc, 50);
                       })
                     : null}
             </div>
